@@ -7552,8 +7552,9 @@ a.anchor-link {
 
 <span class="n">VERBOSE</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="n">importlib</span><span class="o">.</span><span class="n">reload</span><span class="p">(</span><span class="n">feature_builder_v2</span><span class="p">)</span>
-<span class="n">features_matrix</span> <span class="o">=</span> <span class="n">feature_builder_v2</span><span class="o">.</span><span class="n">load_datasets_and_prepare_features</span><span class="p">(</span><span class="n">drop_meta_data</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                                                                        <span class="n">ds_type</span><span class="o">=</span><span class="n">feature_builder_v2</span><span class="o">.</span><span class="n">DatasetType</span><span class="o">.</span><span class="n">BASE</span><span class="p">)</span>
+<span class="n">features_matrix</span> <span class="o">=</span> <span class="n">feature_builder_v2</span><span class="o">.</span><span class="n">load_datasets_and_prepare_features</span><span class="p">(</span>
+    <span class="n">drop_meta_data</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ds_type</span><span class="o">=</span><span class="n">feature_builder_v2</span><span class="o">.</span><span class="n">DatasetType</span><span class="o">.</span><span class="n">BASE</span>
+<span class="p">)</span>
 <span class="n">display</span><span class="p">(</span><span class="s2">"Distribution of Samples"</span><span class="p">)</span>
 <span class="n">value_counts</span> <span class="o">=</span> <span class="n">features_matrix</span><span class="p">[</span><span class="s2">"TARGET"</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
 <span class="n">df_value_counts</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
@@ -7572,8 +7573,9 @@ a.anchor-link {
         <span class="n">transformer_config</span><span class="o">=</span><span class="n">ml_config_core</span><span class="o">.</span><span class="n">PipelineTransformerConfig</span><span class="p">(</span><span class="n">transformers</span><span class="p">),</span>
         <span class="n">data_loader_params</span><span class="o">=</span><span class="p">{</span>
             <span class="s2">"drop_meta_data"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-            <span class="s2">"ds_type"</span><span class="p">:</span> <span class="n">feature_builder_v2</span><span class="o">.</span><span class="n">DatasetType</span><span class="o">.</span><span class="n">BASE_ONLY_CREDIT_RATINGS</span>
-        <span class="p">})</span>
+            <span class="s2">"ds_type"</span><span class="p">:</span> <span class="n">feature_builder_v2</span><span class="o">.</span><span class="n">DatasetType</span><span class="o">.</span><span class="n">BASE_ONLY_CREDIT_RATINGS</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">)</span>
 <span class="p">}</span>
 
 <span class="n">baseline_only_base_feats</span> <span class="o">=</span> <span class="p">{</span>
@@ -7584,7 +7586,8 @@ a.anchor-link {
         <span class="n">data_loader_params</span><span class="o">=</span><span class="p">{</span>
             <span class="s2">"drop_meta_data"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
             <span class="s2">"ds_type"</span><span class="p">:</span> <span class="n">feature_builder_v2</span><span class="o">.</span><span class="n">DatasetType</span><span class="o">.</span><span class="n">BASE</span><span class="p">,</span>
-        <span class="p">}),</span>
+        <span class="p">},</span>
+    <span class="p">),</span>
 <span class="p">}</span>
 
 <span class="n">weighted_log_loss_config</span> <span class="o">=</span> <span class="p">{</span>
@@ -7594,8 +7597,9 @@ a.anchor-link {
         <span class="n">transformer_config</span><span class="o">=</span><span class="n">ml_config_core</span><span class="o">.</span><span class="n">PipelineTransformerConfig</span><span class="p">(</span><span class="n">transformers</span><span class="p">),</span>
         <span class="n">data_loader_params</span><span class="o">=</span><span class="p">{</span>
             <span class="s2">"drop_meta_data"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-            <span class="s2">"drop_cols_post_proc"</span><span class="p">:</span> <span class="n">ZERO_IMP_FEATURES</span> <span class="o">+</span> <span class="n">LOW_IMP_FEATURES</span>
-        <span class="p">}),</span>
+            <span class="s2">"drop_cols_post_proc"</span><span class="p">:</span> <span class="n">ZERO_IMP_FEATURES</span> <span class="o">+</span> <span class="n">LOW_IMP_FEATURES</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">),</span>
 <span class="p">}</span>
 
 <span class="n">tune_auc_config</span><span class="p">:</span> <span class="n">ModelConfigsCollection</span> <span class="o">=</span> <span class="p">{</span>
@@ -7605,8 +7609,9 @@ a.anchor-link {
         <span class="n">data_loader_params</span><span class="o">=</span><span class="p">{</span>
             <span class="s2">"drop_meta_data"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
             <span class="s2">"ds_type"</span><span class="p">:</span> <span class="n">feature_builder_v2</span><span class="o">.</span><span class="n">DatasetType</span><span class="o">.</span><span class="n">FULL</span><span class="p">,</span>
-            <span class="s2">"drop_cols_post_proc"</span><span class="p">:</span> <span class="n">ZERO_IMP_FEATURES</span> <span class="o">+</span> <span class="n">LOW_IMP_FEATURES</span>
-        <span class="p">}),</span>
+            <span class="s2">"drop_cols_post_proc"</span><span class="p">:</span> <span class="n">ZERO_IMP_FEATURES</span> <span class="o">+</span> <span class="n">LOW_IMP_FEATURES</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">),</span>
 <span class="p">}</span>
 
 <span class="n">dart_tune_auc_config</span><span class="p">:</span> <span class="n">ModelConfigsCollection</span> <span class="o">=</span> <span class="p">{</span>
@@ -7616,8 +7621,9 @@ a.anchor-link {
         <span class="n">data_loader_params</span><span class="o">=</span><span class="p">{</span>
             <span class="s2">"drop_meta_data"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
             <span class="s2">"ds_type"</span><span class="p">:</span> <span class="n">feature_builder_v2</span><span class="o">.</span><span class="n">DatasetType</span><span class="o">.</span><span class="n">FULL</span><span class="p">,</span>
-            <span class="s2">"drop_cols_post_proc"</span><span class="p">:</span> <span class="n">ZERO_IMP_FEATURES</span> <span class="o">+</span> <span class="n">LOW_IMP_FEATURES</span>
-        <span class="p">}),</span>
+            <span class="s2">"drop_cols_post_proc"</span><span class="p">:</span> <span class="n">ZERO_IMP_FEATURES</span> <span class="o">+</span> <span class="n">LOW_IMP_FEATURES</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">),</span>
 <span class="p">}</span>
 
 <span class="n">tune_auc_all_features_config</span><span class="p">:</span> <span class="n">ModelConfigsCollection</span> <span class="o">=</span> <span class="p">{</span>
@@ -7628,7 +7634,8 @@ a.anchor-link {
             <span class="s2">"drop_meta_data"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
             <span class="s2">"ds_type"</span><span class="p">:</span> <span class="n">feature_builder_v2</span><span class="o">.</span><span class="n">DatasetType</span><span class="o">.</span><span class="n">FULL</span><span class="p">,</span>
             <span class="c1"># "drop_cols_post_proc": ZERO_IMP_FEATURES + LOW_IMP_FEATURES</span>
-        <span class="p">}),</span>
+        <span class="p">},</span>
+    <span class="p">),</span>
 <span class="p">}</span>
 
 <span class="n">configs</span><span class="p">:</span> <span class="n">ModelConfigsCollection</span> <span class="o">=</span> <span class="p">{</span>
@@ -7711,7 +7718,9 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython2"><pre><span></span><span class="n">tuning_results</span> <span class="o">=</span> <span class="n">run_tuning_for_configs_collection</span><span class="p">(</span><span class="n">configs</span><span class="p">,</span> <span class="n">feature_builder_v2</span><span class="o">.</span><span class="n">load_datasets_and_prepare_features</span><span class="p">)</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">tuning_results</span> <span class="o">=</span> <span class="n">run_tuning_for_configs_collection</span><span class="p">(</span>
+    <span class="n">configs</span><span class="p">,</span> <span class="n">feature_builder_v2</span><span class="o">.</span><span class="n">load_datasets_and_prepare_features</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -15969,8 +15978,9 @@ LGBM_Dart_AUC_NEW Fit, total time:11958.6
 <div class="highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">Draft.feature_builder_v2</span> <span class="kn">import</span> <span class="n">DatasetType</span>
 
 <span class="n">importlib</span><span class="o">.</span><span class="n">reload</span><span class="p">(</span><span class="n">feature_builder_v2</span><span class="p">)</span>
-<span class="n">features_matrix_full</span> <span class="o">=</span> <span class="n">feature_builder_v2</span><span class="o">.</span><span class="n">load_datasets_and_prepare_features</span><span class="p">(</span><span class="n">drop_meta_data</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                                                                             <span class="n">ds_type</span><span class="o">=</span><span class="n">DatasetType</span><span class="o">.</span><span class="n">FULL</span><span class="p">)</span>
+<span class="n">features_matrix_full</span> <span class="o">=</span> <span class="n">feature_builder_v2</span><span class="o">.</span><span class="n">load_datasets_and_prepare_features</span><span class="p">(</span>
+    <span class="n">drop_meta_data</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ds_type</span><span class="o">=</span><span class="n">DatasetType</span><span class="o">.</span><span class="n">FULL</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -16496,10 +16506,12 @@ Full DS size: 307511
 <div class="highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">Draft.feature_builder_v2</span> <span class="kn">import</span> <span class="n">DatasetType</span>
 
 <span class="n">importlib</span><span class="o">.</span><span class="n">reload</span><span class="p">(</span><span class="n">feature_builder_v2</span><span class="p">)</span>
-<span class="n">features_matrix_full</span> <span class="o">=</span> <span class="n">feature_builder_v2</span><span class="o">.</span><span class="n">load_datasets_and_prepare_features</span><span class="p">(</span><span class="n">drop_meta_data</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                                                                             <span class="n">ds_type</span><span class="o">=</span><span class="n">DatasetType</span><span class="o">.</span><span class="n">FULL</span><span class="p">)</span>
-<span class="n">features_matrix_base</span> <span class="o">=</span> <span class="n">feature_builder_v2</span><span class="o">.</span><span class="n">load_datasets_and_prepare_features</span><span class="p">(</span><span class="n">drop_meta_data</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                                                                             <span class="n">ds_type</span><span class="o">=</span><span class="n">DatasetType</span><span class="o">.</span><span class="n">BASE</span><span class="p">)</span>
+<span class="n">features_matrix_full</span> <span class="o">=</span> <span class="n">feature_builder_v2</span><span class="o">.</span><span class="n">load_datasets_and_prepare_features</span><span class="p">(</span>
+    <span class="n">drop_meta_data</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ds_type</span><span class="o">=</span><span class="n">DatasetType</span><span class="o">.</span><span class="n">FULL</span>
+<span class="p">)</span>
+<span class="n">features_matrix_base</span> <span class="o">=</span> <span class="n">feature_builder_v2</span><span class="o">.</span><span class="n">load_datasets_and_prepare_features</span><span class="p">(</span>
+    <span class="n">drop_meta_data</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ds_type</span><span class="o">=</span><span class="n">DatasetType</span><span class="o">.</span><span class="n">BASE</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -16954,8 +16966,9 @@ Full DS size: 307511
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython2"><pre><span></span><span class="n">importlib</span><span class="o">.</span><span class="n">reload</span><span class="p">(</span><span class="n">feature_builder_v2</span><span class="p">)</span>
-<span class="n">features_matrix</span> <span class="o">=</span> <span class="n">feature_builder_v2</span><span class="o">.</span><span class="n">load_datasets_and_prepare_features</span><span class="p">(</span><span class="n">drop_meta_data</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                                                                        <span class="n">ds_type</span><span class="o">=</span><span class="n">feature_builder_v2</span><span class="o">.</span><span class="n">DatasetType</span><span class="o">.</span><span class="n">BASE_ONLY_CREDIT_RATINGS</span><span class="p">)</span>
+<span class="n">features_matrix</span> <span class="o">=</span> <span class="n">feature_builder_v2</span><span class="o">.</span><span class="n">load_datasets_and_prepare_features</span><span class="p">(</span>
+    <span class="n">drop_meta_data</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ds_type</span><span class="o">=</span><span class="n">feature_builder_v2</span><span class="o">.</span><span class="n">DatasetType</span><span class="o">.</span><span class="n">BASE_ONLY_CREDIT_RATINGS</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">shared</span> <span class="kn">import</span> <span class="n">stats_utils</span>
 
 <span class="n">stats_utils</span><span class="o">.</span><span class="n">nan_summary</span><span class="p">(</span><span class="n">features_matrix</span><span class="p">)</span>
