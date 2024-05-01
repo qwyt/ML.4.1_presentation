@@ -7549,8 +7549,27 @@ a.anchor-link {
 <li><p>Our simplified model using fixed <code>Loss Given Default</code> ratios, base interest rates and margins (can be adjusted using actual figures from Home Credit) allowed us to build a more conservative loan approval algorithm would allow Home Credit to hypotehticall reduce their loses by up to 80% or so.</p>
 </li>
 </ul>
-<p>The primary goal was to develop a predictive model that not only assesses the risk of loan default more accurately but also integrates risk assessment into pricing strategies to enhance financial outcomes. Utilizing a variety of models, including LightGBM with the DART algorithm, our efforts culminated in a system that not only predicts loan defaults with a high degree of accuracy but also supports risk-based pricing and loan quality grading. Key achievements include significant reductions in potential losses and the development of a pricing model that adjusts interest rates based on estimated risk levels. These enhancements help balance risk and return, offering a conservative yet profitable lending strategy.</p>
-<h3 id="Project-Structure">Project Structure<a class="anchor-link" href="#Project-Structure">¶</a></h3>
+<h3 id="Project-Structure">Project Structure<a class="anchor-link" href="#Project-Structure">¶</a></h3><p>The project is split into several parts, each represented in separate notebooks. This notebook focuses on the final selection of the "production" model and the financial analysis models. Additionally, you might want to look into:</p>
+<ul>
+<li>The EDA is available <strong><a href="4.3_EDA.html">here</a></strong> (<a href="4.3_EDA_with_code.html">with code</a>). It was done parallel with the model design process and show the main reasons behind specific feature selection and engineering decisions.</li>
+<li>Feature Analysis is <strong><a href="4.4_All_Features.html">here</a></strong> (<a href="4.4_All_Features_with_code.html">with code</a>), shows  the statistical distributions and summaries of all individual features used by the final model.</li>
+</ul>
+<p>Model tuning and selection is available in the appendices:</p>
+<ul>
+<li><strong><a href="4.1_Tuning.html">Model Tuning Using Optuna</a></strong> (<a href="4.1_Tuning_with_code.html">with code</a>): Bayesian tuning was performed for each model, with approximately 100-200 trials using 5-Fold CV.</li>
+<li><strong><a href="4.2_All_Models.html">Model Analysis and Selection</a></strong> (<a href="4.2_All_Models_with_code.html">with code</a>): We compare multiple tuned LGBM models to select the optimal model for "production" and deployment:<ul>
+<li>LightGBM GDBT and Dart models using a subset of features selected using SHAP.</li>
+<li>A model using the full features (applications and aggregated applicant past credit history).</li>
+<li>A simplified model only using application data.</li>
+</ul>
+</li>
+</ul>
+<p>The selected model was trained using 5-Fold CV on the final dataset, with the data split into:</p>
+<ul>
+<li>90% <code>training</code> sample</li>
+<li>5% <code>test</code> sample</li>
+<li>5% <code>probability calibration</code> sample</li>
+</ul>
 </div>
 </div>
 </div>

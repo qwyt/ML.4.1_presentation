@@ -7556,8 +7556,27 @@ a.anchor-link {
 <li><p>Our simplified model using fixed <code>Loss Given Default</code> ratios, base interest rates and margins (can be adjusted using actual figures from Home Credit) allowed us to build a more conservative loan approval algorithm would allow Home Credit to hypotehticall reduce their loses by up to 80% or so.</p>
 </li>
 </ul>
-<p>The primary goal was to develop a predictive model that not only assesses the risk of loan default more accurately but also integrates risk assessment into pricing strategies to enhance financial outcomes. Utilizing a variety of models, including LightGBM with the DART algorithm, our efforts culminated in a system that not only predicts loan defaults with a high degree of accuracy but also supports risk-based pricing and loan quality grading. Key achievements include significant reductions in potential losses and the development of a pricing model that adjusts interest rates based on estimated risk levels. These enhancements help balance risk and return, offering a conservative yet profitable lending strategy.</p>
-<h3 id="Project-Structure">Project Structure<a class="anchor-link" href="#Project-Structure">¶</a></h3>
+<h3 id="Project-Structure">Project Structure<a class="anchor-link" href="#Project-Structure">¶</a></h3><p>The project is split into several parts, each represented in separate notebooks. This notebook focuses on the final selection of the "production" model and the financial analysis models. Additionally, you might want to look into:</p>
+<ul>
+<li>The EDA is available <strong><a href="4.3_EDA.html">here</a></strong> (<a href="4.3_EDA_with_code.html">with code</a>). It was done parallel with the model design process and show the main reasons behind specific feature selection and engineering decisions.</li>
+<li>Feature Analysis is <strong><a href="4.4_All_Features.html">here</a></strong> (<a href="4.4_All_Features_with_code.html">with code</a>), shows  the statistical distributions and summaries of all individual features used by the final model.</li>
+</ul>
+<p>Model tuning and selection is available in the appendices:</p>
+<ul>
+<li><strong><a href="4.1_Tuning.html">Model Tuning Using Optuna</a></strong> (<a href="4.1_Tuning_with_code.html">with code</a>): Bayesian tuning was performed for each model, with approximately 100-200 trials using 5-Fold CV.</li>
+<li><strong><a href="4.2_All_Models.html">Model Analysis and Selection</a></strong> (<a href="4.2_All_Models_with_code.html">with code</a>): We compare multiple tuned LGBM models to select the optimal model for "production" and deployment:<ul>
+<li>LightGBM GDBT and Dart models using a subset of features selected using SHAP.</li>
+<li>A model using the full features (applications and aggregated applicant past credit history).</li>
+<li>A simplified model only using application data.</li>
+</ul>
+</li>
+</ul>
+<p>The selected model was trained using 5-Fold CV on the final dataset, with the data split into:</p>
+<ul>
+<li>90% <code>training</code> sample</li>
+<li>5% <code>test</code> sample</li>
+<li>5% <code>probability calibration</code> sample</li>
+</ul>
 </div>
 </div>
 </div>
@@ -15113,7 +15132,6 @@ a.anchor-link {
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 <span class="kn">from</span> <span class="nn">shared.definitions</span> <span class="kn">import</span> <span class="n">TuningResult</span>
 
-<span class="c1"># from shared.ml_config_core import ModelTrainingResult</span>
 <span class="kn">from</span> <span class="nn">shared</span> <span class="kn">import</span> <span class="n">stats_utils</span>
 <span class="kn">from</span> <span class="nn">shared.ml_config_runner</span> <span class="kn">import</span> <span class="n">build_production_model_for_tuning_result</span>
 <span class="kn">from</span> <span class="nn">shared</span> <span class="kn">import</span> <span class="n">graph</span>
@@ -15127,8 +15145,8 @@ a.anchor-link {
 <span class="kn">import</span> <span class="nn">shared.ml_config_core</span> <span class="k">as</span> <span class="nn">ml_config_core</span>
 <span class="kn">import</span> <span class="nn">src_draft.utils</span> <span class="k">as</span> <span class="nn">local_utils</span>
 <span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Markdown</span>
+<span class="kn">import</span> <span class="nn">shap</span>
 
-<span class="c1"># import matplotlib.pyplot as plt</span>
 <span class="n">VERBOSE</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="n">utils</span><span class="o">.</span><span class="n">pandas_config</span><span class="p">(</span><span class="n">pd</span><span class="p">)</span>
 <span class="n">utils</span><span class="o">.</span><span class="n">plt_config</span><span class="p">(</span><span class="n">plt</span><span class="p">)</span>
@@ -15161,8 +15179,6 @@ a.anchor-link {
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython2"><pre><span></span><span class="n">model_results_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"data/results_all_models_test.csv"</span><span class="p">)</span>
-
-<span class="c1"># TODO: add size in mb and training time</span>
 <span class="n">utils</span><span class="o">.</span><span class="n">create_styled_df</span><span class="p">(</span><span class="n">model_results_df</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -15369,19 +15385,15 @@ a.anchor-link {
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython2"><pre><span></span><span class="n">importlib</span><span class="o">.</span><span class="n">reload</span><span class="p">(</span><span class="n">ml_config_core</span><span class="p">)</span>
 
-<span class="c1"># SELECTED_MODEL_ALT_KEY = "LGBM_AUC"</span>
-<span class="c1"># SELECTED_MODEL_KEY = "LGBM_AUC_All_Features"</span>
-<span class="c1"># SELECTED_MODEL_KEY = "LGBM_Dart_AUC"</span>
-<span class="n">SELECTED_MODEL_KEY</span> <span class="o">=</span> <span class="s2">"LGBM_AUC"</span>
+<span class="c1"># Use to selection different model to analyze:</span>
+<span class="n">SELECTED_MODEL_KEY</span> <span class="o">=</span> <span class="s2">"LGBM_Dart_AUC"</span>
+<span class="c1"># SELECTED_MODEL_KEY = "LGBM_AUC"</span>
 <span class="n">BASELINE_MODEL_KEY</span> <span class="o">=</span> <span class="s2">"Baseline_Only_CreditRatings"</span>
 
 <span class="n">selected_model</span><span class="p">:</span> <span class="n">ml_config_core</span><span class="o">.</span><span class="n">ModelTrainingResult</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">ml_config_core</span><span class="o">.</span><span class="n">ModelTrainingResult</span><span class="o">.</span><span class="n">load_serialize_model</span><span class="p">(</span><span class="n">SELECTED_MODEL_KEY</span><span class="p">)</span>
 <span class="p">)</span>
 
-<span class="c1"># selected_model_alt: TuningResult = ml_config_core.ModelTrainingResult.load_serialize_model(</span>
-<span class="c1">#     SELECTED_MODEL_ALT_KEY)</span>
-<span class="c1">#</span>
 <span class="n">selected_model_pipeline_info</span><span class="p">:</span> <span class="n">TuningResult</span> <span class="o">=</span> <span class="n">TuningResult</span><span class="o">.</span><span class="n">load_serialized_tuning_result</span><span class="p">(</span>
     <span class="n">SELECTED_MODEL_KEY</span>
 <span class="p">)</span>
@@ -15392,7 +15404,7 @@ a.anchor-link {
 
 <span class="n">results_all_models</span> <span class="o">=</span> <span class="p">{</span>
     <span class="n">SELECTED_MODEL_KEY</span><span class="p">:</span> <span class="n">selected_model</span><span class="p">,</span>
-    <span class="c1"># Uncomment to include alternative model</span>
+    <span class="c1"># Uncomment to include alternative models</span>
     <span class="c1"># SELECTED_MODEL_ALT_KEY: selected_model_alt,</span>
     <span class="n">BASELINE_MODEL_KEY</span><span class="p">:</span> <span class="n">baseline_model</span><span class="p">,</span>
 <span class="p">}</span>
@@ -15507,7 +15519,7 @@ a.anchor-link {
 <span class="n">features_matrix</span> <span class="o">=</span> <span class="n">selected_model_pipeline_info</span><span class="o">.</span><span class="n">model_pipeline_config</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span>
     <span class="n">loader_function</span><span class="o">=</span><span class="n">feature_builder_v2</span><span class="o">.</span><span class="n">load_datasets_and_prepare_features</span>
 <span class="p">)</span>
-<span class="c1">#</span>
+
 <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">get_deterministic_train_test_split</span><span class="p">(</span>
     <span class="n">features_matrix</span>
 <span class="p">)</span>
@@ -15641,32 +15653,6 @@ Full DS size: 307511
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=b1f71fef322e04bf">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython2"><pre><span></span><span class="nb">type</span><span class="p">(</span><span class="n">y_test</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[8]:</div>
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
-<pre>pandas.core.series.Series</pre>
-</div>
-</div>
-</div>
-</div>
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=a8b46b9b66b37cb9">
 <div class="jp-Cell-inputWrapper" tabindex="0">
@@ -15701,9 +15687,7 @@ Full DS size: 307511
 <div class="jp-InputPrompt jp-InputArea-prompt">In [10]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">shap</span>
-
-<span class="n">explainer</span> <span class="o">=</span> <span class="n">shap</span><span class="o">.</span><span class="n">TreeExplainer</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">explainer</span> <span class="o">=</span> <span class="n">shap</span><span class="o">.</span><span class="n">TreeExplainer</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
 <span class="n">shap_values</span> <span class="o">=</span> <span class="n">explainer</span><span class="o">.</span><span class="n">shap_values</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
 <span class="n">shap</span><span class="o">.</span><span class="n">summary_plot</span><span class="p">(</span><span class="n">shap_values</span><span class="p">,</span> <span class="n">X_test</span><span class="p">)</span>
 </pre></div>
@@ -15778,14 +15762,11 @@ Full DS size: 307511
 <div class="highlight hl-ipython2"><pre><span></span><span class="n">GENERATE_FEAT_IMP_LISTS</span> <span class="o">=</span> <span class="kc">False</span>
 
 <span class="k">if</span> <span class="n">GENERATE_FEAT_IMP_LISTS</span><span class="p">:</span>
-    <span class="c1"># Assuming shap_values is a list of SHAP values for a multi-class model, or a numpy array for a binary model</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">shap_values</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>  <span class="c1"># Multi-class scenario</span>
-        <span class="c1"># Calculate the mean absolute SHAP values for each feature across all classes</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">shap_values</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
         <span class="n">shap_abs_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">shap_values</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>  <span class="c1"># Binary classification or regression</span>
+    <span class="k">else</span><span class="p">:</span> 
         <span class="n">shap_abs_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">shap_values</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
-    <span class="c1"># Creating a DataFrame with feature names and their corresponding mean absolute SHAP values</span>
     <span class="n">feature_importances_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
         <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">X_test</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">shap_abs_mean</span><span class="p">)),</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"Feature"</span><span class="p">,</span> <span class="s2">"Importance"</span><span class="p">]</span>
     <span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s2">"Importance"</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -15811,6 +15792,7 @@ Full DS size: 307511
     <span class="n">ANY_IMP_FEATURES</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ANY_IMP_FEATURES</span><span class="p">[</span><span class="s2">"Feature"</span><span class="p">])</span>
     <span class="n">ZERO_IMP_FEATURES</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ZERO_IMP_FEATURES</span><span class="p">[</span><span class="s2">"Feature"</span><span class="p">])</span>
     <span class="n">HIGH_IMP_FEATURES</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">HIGH_IMP_FEATURES</span><span class="p">[</span><span class="s2">"Feature"</span><span class="p">])</span>
+    
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"ZERO_IMP_FEATURES: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ZERO_IMP_FEATURES</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"LOW_IMP_FEATURES: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">LOW_IMP_FEATURES</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"HIGH_IMP_FEATURES: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">HIGH_IMP_FEATURES</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
@@ -15944,7 +15926,7 @@ Risk-adjusted Return on Capital (RAROC): Utilize RAROC to evaluate the profitabi
 <span class="n">X_calib</span> <span class="o">=</span> <span class="n">X_calib</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"TARGET"</span><span class="p">])</span>
 
 <span class="n">model</span> <span class="o">=</span> <span class="n">selected_model</span><span class="o">.</span><span class="n">test_data</span><span class="o">.</span><span class="n">test_model</span><span class="o">.</span><span class="n">named_steps</span><span class="p">[</span><span class="s2">"model"</span><span class="p">]</span>
-<span class="c1"># Calibrate the pre-fitted model</span>
+
 <span class="n">calibrated_model</span> <span class="o">=</span> <span class="n">CalibratedClassifierCV</span><span class="p">(</span>
     <span class="n">estimator</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">"isotonic"</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="s2">"prefit"</span>
 <span class="p">)</span>
@@ -16006,14 +15988,13 @@ Risk-adjusted Return on Capital (RAROC): Utilize RAROC to evaluate the profitabi
 <div class="jp-InputPrompt jp-InputArea-prompt">In [16]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython2"><pre><span></span><span class="c1"># Example data</span>
-<span class="n">LGD</span> <span class="o">=</span> <span class="mf">0.5</span>  <span class="c1"># Example Loss Given Default percentages</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">LGD</span> <span class="o">=</span> <span class="mf">0.5</span>  <span class="c1"># Example Loss Given Default percentages, should be adjusted to reflect actual data</span>
 
 <span class="c1"># Parameters</span>
-<span class="n">cost_of_funds</span> <span class="o">=</span> <span class="mf">0.04</span>  <span class="c1"># e.g. Euribor rate</span>
-<span class="n">profit_margin</span> <span class="o">=</span> <span class="mf">0.02</span>  <span class="c1"># Profit margin of 2%</span>
+<span class="n">cost_of_funds</span> <span class="o">=</span> <span class="mf">0.04</span>  <span class="c1"># e.g. Baseline interbank interest rate</span>
+<span class="n">profit_margin</span> <span class="o">=</span> <span class="mf">0.02</span>  <span class="c1"># Change based on actual data</span>
 
-<span class="c1"># Calculate Expected Loss (EL)</span>
+<span class="c1"># Calculate Expected Loss (EL) and actual loss (based on actual Y values)</span>
 <span class="n">EL</span> <span class="o">=</span> <span class="n">prob_pos_calibrated</span> <span class="o">*</span> <span class="n">LGD</span>
 <span class="n">real_L</span> <span class="o">=</span> <span class="n">y_test</span> <span class="o">*</span> <span class="n">LGD</span>
 
@@ -16059,8 +16040,7 @@ Average Interest Rates: 10.037%
 <div class="jp-InputPrompt jp-InputArea-prompt">In [17]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython2"><pre><span></span><span class="c1"># Visualization</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">"whitegrid"</span><span class="p">)</span>  <span class="c1"># Setting the seaborn style</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">"whitegrid"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">interest_rates</span><span class="p">,</span> <span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"blue"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Distribution of Proposed Interest Rates for Home Credit Loan Portfolio"</span><span class="p">)</span>
@@ -16115,14 +16095,12 @@ Average Interest Rates: 10.037%
 
 
 <span class="k">def</span> <span class="nf">calculate_thresholds</span><span class="p">(</span><span class="n">prediction_data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
-    <span class="c1"># Default rates dictionary is now internal to the function</span>
     <span class="n">default_rates</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"A"</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span> <span class="s2">"B"</span><span class="p">:</span> <span class="mf">0.03</span><span class="p">,</span> <span class="s2">"C"</span><span class="p">:</span> <span class="mf">0.07</span><span class="p">,</span> <span class="s2">"D"</span><span class="p">:</span> <span class="mf">0.15</span><span class="p">,</span> <span class="s2">"E-F-G"</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
 
     <span class="n">palette</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s2">"YlOrRd"</span><span class="p">,</span> <span class="n">n_colors</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">default_rates</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span>
     <span class="n">start_color</span> <span class="o">=</span> <span class="s2">"grey"</span>
     <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">start_color</span><span class="p">]</span> <span class="o">+</span> <span class="n">palette</span> <span class="o">+</span> <span class="p">[</span><span class="s2">"red"</span><span class="p">]</span>
 
-    <span class="c1"># Sort by predicted probability of default</span>
     <span class="n">prediction_data_sorted</span> <span class="o">=</span> <span class="n">prediction_data</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="n">sections</span> <span class="o">=</span> <span class="p">[]</span>
@@ -16478,8 +16456,6 @@ C:\Users\Paulius\AppData\Local\pypoetry\Cache\virtualenvs\ppuodz-ml-4-1-dqELbViF
 <div class="highlight hl-ipython2"><pre><span></span><span class="n">transformed_data</span> <span class="o">=</span> <span class="n">X_calib</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="n">transformed_data</span>
 
-<span class="c1"># 'target__loan_status', 'pass__loan_amnt', and 'pass__int_rate'</span>
-
 <span class="n">transformed_data</span><span class="p">[</span><span class="s2">"target__loan_status"</span><span class="p">]</span> <span class="o">=</span> <span class="n">X_calib_target</span>
 <span class="n">transformed_data</span><span class="p">[</span><span class="s2">"pass__loan_amnt"</span><span class="p">]</span> <span class="o">=</span> <span class="n">transformed_data</span><span class="p">[</span><span class="s2">"AmtCredit"</span><span class="p">]</span>
 <span class="n">transformed_data</span><span class="p">[</span><span class="s2">"pass__int_rate"</span><span class="p">]</span> <span class="o">=</span> <span class="n">interest_rates</span>
@@ -16665,17 +16641,13 @@ C:\Users\Paulius\AppData\Local\pypoetry\Cache\virtualenvs\ppuodz-ml-4-1-dqELbViF
 <div class="jp-InputPrompt jp-InputArea-prompt">In [24]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython2"><pre><span></span><span class="c1"># Number of samples to include in subsample</span>
-<span class="n">num_samples</span> <span class="o">=</span> <span class="mi">100</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">num_samples</span> <span class="o">=</span> <span class="mi">100</span>
 
-<span class="c1"># Generate random indices for subsampling</span>
 <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">X_test</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">num_samples</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-<span class="c1"># Subsample the SHAP values and test data</span>
 <span class="n">shap_values_subsample</span> <span class="o">=</span> <span class="n">shap_values</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
 <span class="n">X_test_subsample</span> <span class="o">=</span> <span class="n">X_test</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
 
-<span class="c1"># Use the subsampled data in the decision plot</span>
 <span class="n">shap</span><span class="o">.</span><span class="n">decision_plot</span><span class="p">(</span>
     <span class="n">explainer</span><span class="o">.</span><span class="n">expected_value</span><span class="p">,</span>
     <span class="n">shap_values_subsample</span><span class="p">,</span>
@@ -16720,20 +16692,15 @@ C:\Users\Paulius\AppData\Local\pypoetry\Cache\virtualenvs\ppuodz-ml-4-1-dqELbViF
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="c1"># Number of samples to include in subsample</span>
 <span class="n">num_samples</span> <span class="o">=</span> <span class="mi">100</span>
 
-<span class="c1"># Generate random indices for subsampling from the full dataset</span>
 <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">X_test</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">num_samples</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-<span class="c1"># Subsample the SHAP values and test data</span>
 <span class="n">shap_values_subsample</span> <span class="o">=</span> <span class="n">shap_values</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
 <span class="n">X_test_subsample</span> <span class="o">=</span> <span class="n">X_test</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
 
-<span class="c1"># Indices of specific observations to display with feature values</span>
-<span class="n">specific_indices</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># Adjust indices based on your needs within the subsample</span>
+<span class="n">specific_indices</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
 
-<span class="c1"># Plot each specific index with feature values</span>
 <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">specific_indices</span><span class="p">:</span>
     <span class="n">shap</span><span class="o">.</span><span class="n">decision_plot</span><span class="p">(</span>
         <span class="n">explainer</span><span class="o">.</span><span class="n">expected_value</span><span class="p">,</span>
@@ -16775,14 +16742,12 @@ C:\Users\Paulius\AppData\Local\pypoetry\Cache\virtualenvs\ppuodz-ml-4-1-dqELbViF
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="c1"># Calculate absolute differences between predicted probabilities and actual values</span>
 <span class="n">predicted_probabilities</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)[</span>
                           <span class="p">:,</span> <span class="mi">1</span>
-                          <span class="p">]</span>  <span class="c1"># Probabilities for the positive class</span>
+                          <span class="p">]</span>
 
 <span class="n">absolute_differences</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">predicted_probabilities</span> <span class="o">-</span> <span class="n">y_test</span><span class="p">)</span>
 
-<span class="c1"># Create a DataFrame for easier handling</span>
 <span class="n">differences_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
     <span class="p">{</span><span class="s2">"absolute_difference"</span><span class="p">:</span> <span class="n">absolute_differences</span><span class="p">,</span> <span class="s2">"index"</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y_test</span><span class="p">))}</span>
 <span class="p">)</span>
@@ -16823,13 +16788,11 @@ C:\Users\Paulius\AppData\Local\pypoetry\Cache\virtualenvs\ppuodz-ml-4-1-dqELbViF
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="c1"># Calculate absolute differences between predicted probabilities and actual values</span>
 <span class="n">predicted_probabilities</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)[:,</span> <span class="mi">1</span><span class="p">]</span>
 
 <span class="n">absolute_differences</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">predicted_probabilities</span> <span class="o">-</span> <span class="n">y_test</span><span class="p">)</span>
 <span class="n">real_differences</span> <span class="o">=</span> <span class="n">predicted_probabilities</span> <span class="o">-</span> <span class="n">y_test</span>
 
-<span class="c1"># Create a DataFrame for easier handling</span>
 <span class="n">differences_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
     <span class="p">{</span>
         <span class="s2">"y_test"</span><span class="p">:</span> <span class="n">y_test</span><span class="p">,</span>
@@ -16840,7 +16803,6 @@ C:\Users\Paulius\AppData\Local\pypoetry\Cache\virtualenvs\ppuodz-ml-4-1-dqELbViF
     <span class="p">}</span>
 <span class="p">)</span>
 
-<span class="c1"># Sort by 'absolute_difference' in descending order and select the top N</span>
 <span class="n">N</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="n">top_differences_df</span> <span class="o">=</span> <span class="n">differences_df</span><span class="o">.</span><span class="n">nlargest</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="s2">"absolute_difference"</span><span class="p">)</span>
 <span class="n">min_differences_df</span> <span class="o">=</span> <span class="n">differences_df</span><span class="o">.</span><span class="n">nsmallest</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="s2">"absolute_difference"</span><span class="p">)</span>
@@ -16859,7 +16821,6 @@ C:\Users\Paulius\AppData\Local\pypoetry\Cache\virtualenvs\ppuodz-ml-4-1-dqELbViF
     <span class="n">n</span><span class="o">=</span><span class="n">N</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
 <span class="p">)</span>  
 
-<span class="c1"># Get the indices of the selected samples</span>
 <span class="n">selected_indices</span> <span class="o">=</span> <span class="n">random_sample_top_diff</span><span class="p">[</span><span class="s2">"index"</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
 <span class="n">selected_min_indices</span> <span class="o">=</span> <span class="n">random_sample_min_diff</span><span class="p">[</span><span class="s2">"index"</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
 <span class="n">posmin_indices</span> <span class="o">=</span> <span class="n">random_sample_posmin_diff</span><span class="p">[</span><span class="s2">"index"</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
@@ -16872,7 +16833,6 @@ C:\Users\Paulius\AppData\Local\pypoetry\Cache\virtualenvs\ppuodz-ml-4-1-dqELbViF
 <span class="n">shap_values</span> <span class="o">=</span> <span class="n">explainer</span><span class="o">.</span><span class="n">shap_values</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">posmin_indices</span><span class="p">,</span> <span class="n">selected_min_indices</span><span class="p">,</span> <span class="n">selected_indices</span><span class="p">]):</span>
-    <span class="c1"># Create an Explanation object from SHAP values</span>
     <span class="n">shap_explanation</span> <span class="o">=</span> <span class="n">shap</span><span class="o">.</span><span class="n">Explanation</span><span class="p">(</span>
         <span class="n">values</span><span class="o">=</span><span class="n">shap_values</span><span class="p">[</span><span class="n">index</span><span class="p">],</span>
         <span class="n">base_values</span><span class="o">=</span><span class="n">explainer</span><span class="o">.</span><span class="n">expected_value</span><span class="p">,</span>
