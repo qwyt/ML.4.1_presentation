@@ -15100,7 +15100,47 @@ a.anchor-link {
     </style>
     </head>
 <body class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
-<main><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput" id="cell-id=initial_id">
+<main><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=initial_id">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [1]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="nn">shared.definitions</span> <span class="kn">import</span> <span class="n">TuningResult</span>
+
+<span class="c1"># from shared.ml_config_core import ModelTrainingResult</span>
+<span class="kn">from</span> <span class="nn">shared</span> <span class="kn">import</span> <span class="n">stats_utils</span>
+<span class="kn">from</span> <span class="nn">shared.ml_config_runner</span> <span class="kn">import</span> <span class="n">build_production_model_for_tuning_result</span>
+<span class="kn">from</span> <span class="nn">shared</span> <span class="kn">import</span> <span class="n">graph</span>
+<span class="kn">from</span> <span class="nn">shared</span> <span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">xgboost</span>
+<span class="kn">from</span> <span class="nn">Draft</span> <span class="kn">import</span> <span class="n">feature_builder_v2</span>
+<span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">import</span> <span class="nn">xgboost</span> <span class="k">as</span> <span class="nn">xgb</span>
+<span class="kn">import</span> <span class="nn">shared.ml_config_core</span> <span class="k">as</span> <span class="nn">ml_config_core</span>
+<span class="kn">import</span> <span class="nn">src_draft.utils</span> <span class="k">as</span> <span class="nn">local_utils</span>
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Markdown</span>
+
+<span class="c1"># import matplotlib.pyplot as plt</span>
+<span class="n">VERBOSE</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">utils</span><span class="o">.</span><span class="n">pandas_config</span><span class="p">(</span><span class="n">pd</span><span class="p">)</span>
+<span class="n">utils</span><span class="o">.</span><span class="n">plt_config</span><span class="p">(</span><span class="n">plt</span><span class="p">)</span>
+
+<span class="n">sns</span><span class="o">.</span><span class="n">set_theme</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">"darkgrid"</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s2">"pastel"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s2">"fivethirtyeight"</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=45f817190de0e9cd">
 <div class="jp-Cell-inputWrapper" tabindex="0">
@@ -15112,7 +15152,23 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noInput" id="cell-id=20017e2a0cef98cf">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=20017e2a0cef98cf">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">model_results_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"data/results_all_models_test.csv"</span><span class="p">)</span>
+
+<span class="c1"># TODO: add size in mb and training time</span>
+<span class="n">utils</span><span class="o">.</span><span class="n">create_styled_df</span><span class="p">(</span><span class="n">model_results_df</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
 <div class="jp-Cell-outputWrapper">
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
@@ -15303,8 +15359,64 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput" id="cell-id=1c01a4d2a41583b3">
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noInput" id="cell-id=12f3500383419840">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=1c01a4d2a41583b3">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">importlib</span><span class="o">.</span><span class="n">reload</span><span class="p">(</span><span class="n">ml_config_core</span><span class="p">)</span>
+
+<span class="c1"># SELECTED_MODEL_ALT_KEY = "LGBM_AUC"</span>
+<span class="c1"># SELECTED_MODEL_KEY = "LGBM_AUC_All_Features"</span>
+<span class="c1"># SELECTED_MODEL_KEY = "LGBM_Dart_AUC"</span>
+<span class="n">SELECTED_MODEL_KEY</span> <span class="o">=</span> <span class="s2">"LGBM_AUC"</span>
+<span class="n">BASELINE_MODEL_KEY</span> <span class="o">=</span> <span class="s2">"Baseline_Only_CreditRatings"</span>
+
+<span class="n">selected_model</span><span class="p">:</span> <span class="n">ml_config_core</span><span class="o">.</span><span class="n">ModelTrainingResult</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">ml_config_core</span><span class="o">.</span><span class="n">ModelTrainingResult</span><span class="o">.</span><span class="n">load_serialize_model</span><span class="p">(</span><span class="n">SELECTED_MODEL_KEY</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># selected_model_alt: TuningResult = ml_config_core.ModelTrainingResult.load_serialize_model(</span>
+<span class="c1">#     SELECTED_MODEL_ALT_KEY)</span>
+<span class="c1">#</span>
+<span class="n">selected_model_pipeline_info</span><span class="p">:</span> <span class="n">TuningResult</span> <span class="o">=</span> <span class="n">TuningResult</span><span class="o">.</span><span class="n">load_serialized_tuning_result</span><span class="p">(</span>
+    <span class="n">SELECTED_MODEL_KEY</span>
+<span class="p">)</span>
+
+<span class="n">baseline_model</span><span class="p">:</span> <span class="n">ml_config_core</span><span class="o">.</span><span class="n">ModelTrainingResult</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">ml_config_core</span><span class="o">.</span><span class="n">ModelTrainingResult</span><span class="o">.</span><span class="n">load_serialize_model</span><span class="p">(</span><span class="n">BASELINE_MODEL_KEY</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">results_all_models</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">SELECTED_MODEL_KEY</span><span class="p">:</span> <span class="n">selected_model</span><span class="p">,</span>
+    <span class="c1"># Uncomment to include alternative model</span>
+    <span class="c1"># SELECTED_MODEL_ALT_KEY: selected_model_alt,</span>
+    <span class="n">BASELINE_MODEL_KEY</span><span class="p">:</span> <span class="n">baseline_model</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=12f3500383419840">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">importlib</span><span class="o">.</span><span class="n">reload</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+
+<span class="n">graph</span><span class="o">.</span><span class="n">roc_precision_recal_grid_plot</span><span class="p">(</span><span class="n">results_all_models</span><span class="p">,</span> <span class="n">show_observation_count</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
 <div class="jp-Cell-outputWrapper">
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
@@ -15325,7 +15437,32 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noInput" id="cell-id=8e8525873ac5d903">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=8e8525873ac5d903">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">importlib</span><span class="o">.</span><span class="n">reload</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">model_key</span><span class="p">,</span> <span class="n">_selected_model</span> <span class="ow">in</span> <span class="n">results_all_models</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">graph</span><span class="o">.</span><span class="n">confusion_matrix_plot_v2</span><span class="p">(</span>
+        <span class="n">_selected_model</span><span class="o">.</span><span class="n">cm_data</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="n">model_key</span><span class="p">,</span>
+        <span class="n">annotations</span><span class="o">=</span><span class="n">graph</span><span class="o">.</span><span class="n">make_annotations</span><span class="p">(</span>
+            <span class="n">_selected_model</span><span class="o">.</span><span class="n">test_data</span><span class="o">.</span><span class="n">metrics_2</span><span class="p">,</span>
+            <span class="n">n_feats</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">_selected_model</span><span class="o">.</span><span class="n">cm_data</span><span class="o">.</span><span class="n">x_test</span><span class="o">.</span><span class="n">columns</span><span class="p">),</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
 <div class="jp-Cell-outputWrapper">
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
@@ -15357,7 +15494,33 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noInput" id="cell-id=a86b4a44d045c2f0">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=a86b4a44d045c2f0">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">shared</span> <span class="kn">import</span> <span class="n">pipeline</span>
+
+<span class="n">features_matrix</span> <span class="o">=</span> <span class="n">selected_model_pipeline_info</span><span class="o">.</span><span class="n">model_pipeline_config</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span>
+    <span class="n">loader_function</span><span class="o">=</span><span class="n">feature_builder_v2</span><span class="o">.</span><span class="n">load_datasets_and_prepare_features</span>
+<span class="p">)</span>
+<span class="c1">#</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">get_deterministic_train_test_split</span><span class="p">(</span>
+    <span class="n">features_matrix</span>
+<span class="p">)</span>
+<span class="n">X_train</span> <span class="o">=</span> <span class="n">X_train</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"TARGET"</span><span class="p">])</span>
+<span class="n">X_test</span> <span class="o">=</span> <span class="n">X_test</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"TARGET"</span><span class="p">])</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">selected_model</span><span class="o">.</span><span class="n">test_data</span><span class="o">.</span><span class="n">test_model</span><span class="o">.</span><span class="n">named_steps</span><span class="p">[</span><span class="s2">"model"</span><span class="p">]</span>
+<span class="n">prob_pos</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)[:,</span> <span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
 <div class="jp-Cell-outputWrapper">
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
@@ -15464,8 +15627,34 @@ Full DS size: 307511
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput" id="cell-id=f48b5c6ffb561cf2">
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noInput" id="cell-id=b1f71fef322e04bf">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=f48b5c6ffb561cf2">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">prob_pos_series</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">prob_pos</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">y_test</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"TARGET"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=b1f71fef322e04bf">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython2"><pre><span></span><span class="nb">type</span><span class="p">(</span><span class="n">y_test</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
 <div class="jp-Cell-outputWrapper">
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
@@ -15489,8 +15678,39 @@ Full DS size: 307511
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput" id="cell-id=dba7e0b8c4ec5f1e">
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noInput" id="cell-id=3fe254b3eeca8474">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=dba7e0b8c4ec5f1e">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [9]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">selected_model</span><span class="o">.</span><span class="n">test_data</span><span class="o">.</span><span class="n">test_model</span><span class="o">.</span><span class="n">named_steps</span><span class="p">[</span><span class="s2">"model"</span><span class="p">]</span>
+<span class="n">prob_pos</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)[:,</span> <span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=3fe254b3eeca8474">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [10]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">shap</span>
+
+<span class="n">explainer</span> <span class="o">=</span> <span class="n">shap</span><span class="o">.</span><span class="n">TreeExplainer</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+<span class="n">shap_values</span> <span class="o">=</span> <span class="n">explainer</span><span class="o">.</span><span class="n">shap_values</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="n">shap</span><span class="o">.</span><span class="n">summary_plot</span><span class="p">(</span><span class="n">shap_values</span><span class="p">,</span> <span class="n">X_test</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
 <div class="jp-Cell-outputWrapper">
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
@@ -15511,7 +15731,22 @@ Full DS size: 307511
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noInput" id="cell-id=9568e257e59eae2a">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=9568e257e59eae2a">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [11]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">explainer</span> <span class="o">=</span> <span class="n">shap</span><span class="o">.</span><span class="n">TreeExplainer</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+<span class="n">shap_values</span> <span class="o">=</span> <span class="n">explainer</span><span class="o">.</span><span class="n">shap_values</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="n">shap</span><span class="o">.</span><span class="n">summary_plot</span><span class="p">(</span><span class="n">shap_values</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">plot_type</span><span class="o">=</span><span class="s2">"bar"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
 <div class="jp-Cell-outputWrapper">
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
@@ -15532,7 +15767,68 @@ Full DS size: 307511
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput" id="cell-id=376d874c726880ff">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=376d874c726880ff">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [12]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">GENERATE_FEAT_IMP_LISTS</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="k">if</span> <span class="n">GENERATE_FEAT_IMP_LISTS</span><span class="p">:</span>
+    <span class="c1"># Assuming shap_values is a list of SHAP values for a multi-class model, or a numpy array for a binary model</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">shap_values</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>  <span class="c1"># Multi-class scenario</span>
+        <span class="c1"># Calculate the mean absolute SHAP values for each feature across all classes</span>
+        <span class="n">shap_abs_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">shap_values</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>  <span class="c1"># Binary classification or regression</span>
+        <span class="n">shap_abs_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">shap_values</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># Creating a DataFrame with feature names and their corresponding mean absolute SHAP values</span>
+    <span class="n">feature_importances_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">X_test</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">shap_abs_mean</span><span class="p">)),</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"Feature"</span><span class="p">,</span> <span class="s2">"Importance"</span><span class="p">]</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s2">"Importance"</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="n">low_imp</span> <span class="o">=</span> <span class="n">feature_importances_df</span><span class="p">[</span><span class="n">feature_importances_df</span><span class="p">[</span><span class="s2">"Importance"</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.002</span><span class="p">]</span>
+    <span class="n">low_imp</span> <span class="o">=</span> <span class="n">feature_importances_df</span><span class="p">[</span><span class="n">feature_importances_df</span><span class="p">[</span><span class="s2">"Importance"</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.002</span><span class="p">]</span>
+
+    <span class="n">ZERO_IMP_FEATURES</span> <span class="o">=</span> <span class="n">feature_importances_df</span><span class="p">[</span>
+        <span class="n">feature_importances_df</span><span class="p">[</span><span class="s2">"Importance"</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.001</span>
+        <span class="p">]</span>
+    <span class="n">LOW_IMP_FEATURES</span> <span class="o">=</span> <span class="n">feature_importances_df</span><span class="p">[</span>
+        <span class="p">(</span><span class="n">feature_importances_df</span><span class="p">[</span><span class="s2">"Importance"</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mf">0.001</span><span class="p">)</span>
+        <span class="o">&amp;</span> <span class="p">(</span><span class="n">feature_importances_df</span><span class="p">[</span><span class="s2">"Importance"</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.04</span><span class="p">)</span>
+        <span class="p">]</span>
+    <span class="n">HIGH_IMP_FEATURES</span> <span class="o">=</span> <span class="n">feature_importances_df</span><span class="p">[</span>
+        <span class="n">feature_importances_df</span><span class="p">[</span><span class="s2">"Importance"</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mf">0.04</span>
+        <span class="p">]</span>
+    <span class="n">ANY_IMP_FEATURES</span> <span class="o">=</span> <span class="n">feature_importances_df</span><span class="p">[</span>
+        <span class="n">feature_importances_df</span><span class="p">[</span><span class="s2">"Importance"</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mf">0.001</span>
+        <span class="p">]</span>
+
+    <span class="n">LOW_IMP_FEATURES</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">LOW_IMP_FEATURES</span><span class="p">[</span><span class="s2">"Feature"</span><span class="p">])</span>
+    <span class="n">ANY_IMP_FEATURES</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ANY_IMP_FEATURES</span><span class="p">[</span><span class="s2">"Feature"</span><span class="p">])</span>
+    <span class="n">ZERO_IMP_FEATURES</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ZERO_IMP_FEATURES</span><span class="p">[</span><span class="s2">"Feature"</span><span class="p">])</span>
+    <span class="n">HIGH_IMP_FEATURES</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">HIGH_IMP_FEATURES</span><span class="p">[</span><span class="s2">"Feature"</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"ZERO_IMP_FEATURES: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ZERO_IMP_FEATURES</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"LOW_IMP_FEATURES: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">LOW_IMP_FEATURES</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"HIGH_IMP_FEATURES: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">HIGH_IMP_FEATURES</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"ANY_IMP_FEATURES: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ANY_IMP_FEATURES</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="n">all_feats</span> <span class="o">=</span> <span class="n">feature_builder_v2</span><span class="o">.</span><span class="n">load_datasets_and_prepare_features</span><span class="p">(</span>
+        <span class="n">drop_meta_data</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">ds_type</span><span class="o">=</span><span class="n">feature_builder_v2</span><span class="o">.</span><span class="n">DatasetType</span><span class="o">.</span><span class="n">FULL</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">ALL_FEATS</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">all_feats</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+    <span class="n">ZERO_IMP_FEATURES</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">feat</span> <span class="k">for</span> <span class="n">feat</span> <span class="ow">in</span> <span class="n">ALL_FEATS</span> <span class="k">if</span> <span class="n">feat</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">HIGH_IMP_FEATURES</span> <span class="o">+</span> <span class="n">LOW_IMP_FEATURES</span>
+    <span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=a768318768cd1644">
 <div class="jp-Cell-inputWrapper" tabindex="0">
@@ -15577,7 +15873,25 @@ Risk-adjusted Return on Capital (RAROC): Utilize RAROC to evaluate the profitabi
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noInput" id="cell-id=444ec7e7f61ac8be">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=444ec7e7f61ac8be">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [13]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">display</span><span class="p">(</span><span class="n">Markdown</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Mean. Model Predicted Probabilities = `</span><span class="si">{</span><span class="n">prob_pos</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">`"</span><span class="p">))</span>
+<span class="n">display</span><span class="p">(</span>
+    <span class="n">Markdown</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">"Actual Portfolio Default Rate = `</span><span class="si">{</span><span class="n">features_matrix</span><span class="p">[</span><span class="s1">'TARGET'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">`"</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
 <div class="jp-Cell-outputWrapper">
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
@@ -15608,8 +15922,58 @@ Risk-adjusted Return on Capital (RAROC): Utilize RAROC to evaluate the profitabi
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput" id="cell-id=62df47ff3435cd63">
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noInput" id="cell-id=93fdd16a06e15462">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=62df47ff3435cd63">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [14]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.calibration</span> <span class="kn">import</span> <span class="n">CalibratedClassifierCV</span>
+
+<span class="n">importlib</span><span class="o">.</span><span class="n">reload</span><span class="p">(</span><span class="n">pipeline</span><span class="p">)</span>
+<span class="n">X_train_sub</span><span class="p">,</span> <span class="n">X_calib</span><span class="p">,</span> <span class="n">y_train_sub</span><span class="p">,</span> <span class="n">y_calib</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">pipeline</span><span class="o">.</span><span class="n">get_deterministic_train_test_split</span><span class="p">(</span>
+        <span class="n">features_matrix</span><span class="p">,</span> <span class="n">include_calibration</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">X_train_sub</span> <span class="o">=</span> <span class="n">X_train_sub</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"TARGET"</span><span class="p">])</span>
+<span class="n">X_calib_target</span> <span class="o">=</span> <span class="n">X_calib</span><span class="p">[</span><span class="s2">"TARGET"</span><span class="p">]</span>
+<span class="n">X_calib</span> <span class="o">=</span> <span class="n">X_calib</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"TARGET"</span><span class="p">])</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">selected_model</span><span class="o">.</span><span class="n">test_data</span><span class="o">.</span><span class="n">test_model</span><span class="o">.</span><span class="n">named_steps</span><span class="p">[</span><span class="s2">"model"</span><span class="p">]</span>
+<span class="c1"># Calibrate the pre-fitted model</span>
+<span class="n">calibrated_model</span> <span class="o">=</span> <span class="n">CalibratedClassifierCV</span><span class="p">(</span>
+    <span class="n">estimator</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">"isotonic"</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="s2">"prefit"</span>
+<span class="p">)</span>
+<span class="n">y_calib_predictions</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_calib</span><span class="p">)</span>
+<span class="n">calibrated_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_calib</span><span class="p">,</span> <span class="n">y_calib</span><span class="p">)</span>
+<span class="n">prob_pos_calibrated</span> <span class="o">=</span> <span class="n">calibrated_model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)[:,</span> <span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=93fdd16a06e15462">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [15]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">display</span><span class="p">(</span>
+    <span class="n">Markdown</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">"Mean. Model Calibrated Probabilities = `</span><span class="si">{</span><span class="n">prob_pos_calibrated</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">`"</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
 <div class="jp-Cell-outputWrapper">
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
@@ -15634,7 +15998,41 @@ Risk-adjusted Return on Capital (RAROC): Utilize RAROC to evaluate the profitabi
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noInput" id="cell-id=864700844dc134c8">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=864700844dc134c8">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [16]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython2"><pre><span></span><span class="c1"># Example data</span>
+<span class="n">LGD</span> <span class="o">=</span> <span class="mf">0.5</span>  <span class="c1"># Example Loss Given Default percentages</span>
+
+<span class="c1"># Parameters</span>
+<span class="n">cost_of_funds</span> <span class="o">=</span> <span class="mf">0.04</span>  <span class="c1"># e.g. Euribor rate</span>
+<span class="n">profit_margin</span> <span class="o">=</span> <span class="mf">0.02</span>  <span class="c1"># Profit margin of 2%</span>
+
+<span class="c1"># Calculate Expected Loss (EL)</span>
+<span class="n">EL</span> <span class="o">=</span> <span class="n">prob_pos_calibrated</span> <span class="o">*</span> <span class="n">LGD</span>
+<span class="n">real_L</span> <span class="o">=</span> <span class="n">y_test</span> <span class="o">*</span> <span class="n">LGD</span>
+
+<span class="c1"># Calculate interest rates</span>
+<span class="n">interest_rates</span> <span class="o">=</span> <span class="n">cost_of_funds</span> <span class="o">+</span> <span class="n">EL</span> <span class="o">+</span> <span class="n">profit_margin</span>
+<span class="n">interest_rates_real</span> <span class="o">=</span> <span class="n">cost_of_funds</span> <span class="o">+</span> <span class="n">real_L</span> <span class="o">+</span> <span class="n">profit_margin</span>
+
+<span class="c1"># Output results</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Calibrated Probabilities mean:  </span><span class="si">{</span><span class="n">prob_pos_calibrated</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Loss Given Default (LGD):  </span><span class="si">{</span><span class="n">LGD</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Expected Loss as % (EL):  </span><span class="si">{</span><span class="n">EL</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.3</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Real Loss as % (EL):  </span><span class="si">{</span><span class="n">real_L</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.3</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Average Interest Rates: </span><span class="si">{</span><span class="n">interest_rates</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.3%</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Average Interest Rates: </span><span class="si">{</span><span class="n">interest_rates_real</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.3%</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
 <div class="jp-Cell-outputWrapper">
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
@@ -15653,7 +16051,27 @@ Average Interest Rates: 10.037%
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noInput" id="cell-id=72c2b82c1323a483">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=72c2b82c1323a483">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [17]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython2"><pre><span></span><span class="c1"># Visualization</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">"whitegrid"</span><span class="p">)</span>  <span class="c1"># Setting the seaborn style</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">interest_rates</span><span class="p">,</span> <span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"blue"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Distribution of Proposed Interest Rates for Home Credit Loan Portfolio"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">"Interest Rate (%)"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">"Frequency"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
 <div class="jp-Cell-outputWrapper">
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
@@ -15677,7 +16095,101 @@ Average Interest Rates: 10.037%
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noInput" id="cell-id=b3ad16f1342b0452">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=b3ad16f1342b0452">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [18]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">target_cm_data</span> <span class="o">=</span> <span class="n">selected_model</span><span class="o">.</span><span class="n">test_data</span>
+<span class="n">target_cm_data_sorted</span> <span class="o">=</span> <span class="n">target_cm_data</span><span class="o">.</span><span class="n">probabilities</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span>
+    <span class="n">drop</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+<span class="n">prediction_data</span> <span class="o">=</span> <span class="n">target_cm_data</span><span class="o">.</span><span class="n">probabilities</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">prediction_data</span><span class="p">[</span><span class="s2">"value"</span><span class="p">]</span> <span class="o">=</span> <span class="n">target_cm_data</span><span class="o">.</span><span class="n">y_test</span>
+
+
+<span class="k">def</span> <span class="nf">calculate_thresholds</span><span class="p">(</span><span class="n">prediction_data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+    <span class="c1"># Default rates dictionary is now internal to the function</span>
+    <span class="n">default_rates</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"A"</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span> <span class="s2">"B"</span><span class="p">:</span> <span class="mf">0.03</span><span class="p">,</span> <span class="s2">"C"</span><span class="p">:</span> <span class="mf">0.07</span><span class="p">,</span> <span class="s2">"D"</span><span class="p">:</span> <span class="mf">0.15</span><span class="p">,</span> <span class="s2">"E-F-G"</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
+
+    <span class="n">palette</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s2">"YlOrRd"</span><span class="p">,</span> <span class="n">n_colors</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">default_rates</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">start_color</span> <span class="o">=</span> <span class="s2">"grey"</span>
+    <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">start_color</span><span class="p">]</span> <span class="o">+</span> <span class="n">palette</span> <span class="o">+</span> <span class="p">[</span><span class="s2">"red"</span><span class="p">]</span>
+
+    <span class="c1"># Sort by predicted probability of default</span>
+    <span class="n">prediction_data_sorted</span> <span class="o">=</span> <span class="n">prediction_data</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">sections</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">previous_threshold</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">color_index</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">grade</span><span class="p">,</span> <span class="n">max_default_rate</span> <span class="ow">in</span> <span class="n">default_rates</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">remaining_loans</span> <span class="o">=</span> <span class="n">prediction_data_sorted</span><span class="p">[</span>
+            <span class="n">prediction_data_sorted</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">previous_threshold</span>
+            <span class="p">]</span>
+
+        <span class="n">remaining_loans</span><span class="p">[</span><span class="s2">"cumulative_defaults"</span><span class="p">]</span> <span class="o">=</span> <span class="n">remaining_loans</span><span class="p">[</span><span class="s2">"value"</span><span class="p">]</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span>
+        <span class="n">total_loans</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">remaining_loans</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">remaining_loans</span><span class="p">[</span><span class="s2">"default_rate"</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">remaining_loans</span><span class="p">[</span><span class="s2">"cumulative_defaults"</span><span class="p">]</span> <span class="o">/</span> <span class="n">total_loans</span>
+        <span class="p">)</span>
+
+        <span class="n">valid_loans</span> <span class="o">=</span> <span class="n">remaining_loans</span><span class="p">[</span>
+            <span class="n">remaining_loans</span><span class="p">[</span><span class="s2">"default_rate"</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">max_default_rate</span>
+            <span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">valid_loans</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="n">threshold</span> <span class="o">=</span> <span class="n">valid_loans</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">threshold</span> <span class="o">=</span> <span class="n">previous_threshold</span>
+
+        <span class="n">sections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">"label"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">grade</span><span class="si">}</span><span class="s2"> Grade"</span><span class="p">,</span>
+                <span class="s2">"start"</span><span class="p">:</span> <span class="n">previous_threshold</span><span class="p">,</span>
+                <span class="s2">"end"</span><span class="p">:</span> <span class="n">threshold</span><span class="p">,</span>
+                <span class="s2">"color"</span><span class="p">:</span> <span class="n">colors</span><span class="p">[</span><span class="n">color_index</span><span class="p">],</span>
+                <span class="s2">"description"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"Default rate up to </span><span class="si">{</span><span class="n">max_default_rate</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">%"</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+
+        <span class="n">previous_threshold</span> <span class="o">=</span> <span class="n">threshold</span>
+        <span class="n">color_index</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="n">sections</span><span class="p">:</span>
+        <span class="n">sections</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s2">"end"</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+    <span class="k">return</span> <span class="n">sections</span>
+
+
+<span class="n">sections</span> <span class="o">=</span> <span class="n">calculate_thresholds</span><span class="p">(</span><span class="n">prediction_data</span><span class="p">)</span>
+<span class="n">importlib</span><span class="o">.</span><span class="n">reload</span><span class="p">(</span><span class="n">stats_utils</span><span class="p">)</span>
+<span class="n">importlib</span><span class="o">.</span><span class="n">reload</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+<span class="n">summary_desc</span> <span class="o">=</span> <span class="s2">"`The chart shows the  performance of the if only individual with stroke Prob. &gt; T are selected. Additionally the overlay indicates the number of people whose predicted P is in an given range. The overlays can be used to selected the most at risk individual based on the probability predicted for them`"</span>
+<span class="kn">from</span> <span class="nn">IPython.core.display</span> <span class="kn">import</span> <span class="n">Markdown</span>
+
+<span class="n">graph</span><span class="o">.</span><span class="n">plot_threshold_metrics_v2</span><span class="p">(</span>
+    <span class="n">target_cm_data</span><span class="p">,</span>
+    <span class="mi">0</span><span class="p">,</span>
+    <span class="mi">1</span><span class="p">,</span>
+    <span class="n">sections</span><span class="o">=</span><span class="n">sections</span><span class="p">,</span>
+    <span class="n">model_name</span><span class="o">=</span><span class="n">SELECTED_MODEL_KEY</span><span class="p">,</span>
+    <span class="n">class_pos</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">include_vars</span><span class="o">=</span><span class="p">[</span><span class="s2">"f1"</span><span class="p">,</span> <span class="s2">"precision"</span><span class="p">,</span> <span class="s2">"recall"</span><span class="p">],</span>
+    <span class="n">show_threshold_n</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">log_x</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">display</span><span class="p">(</span><span class="n">Markdown</span><span class="p">(</span><span class="n">summary_desc</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
 <div class="jp-Cell-outputWrapper">
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
@@ -15712,7 +16224,55 @@ C:\Users\Paulius\AppData\Local\pypoetry\Cache\virtualenvs\ppuodz-ml-4-1-dqELbViF
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noInput" id="cell-id=63891a21cd68b07a">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=63891a21cd68b07a">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [19]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">importlib</span><span class="o">.</span><span class="n">reload</span><span class="p">(</span><span class="n">local_utils</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">map_grade_prediction_based_on_prop_fact</span><span class="p">(</span><span class="n">sections</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">map_grade_prediction_based_on_prop</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">sections</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">section</span><span class="p">[</span><span class="s2">"start"</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">row</span> <span class="o">&lt;</span> <span class="n">section</span><span class="p">[</span><span class="s2">"end"</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="n">section</span><span class="p">[</span><span class="s2">"label"</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">" Grade"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>  <span class="c1"># Return None if no matching range is found</span>
+
+    <span class="k">return</span> <span class="n">map_grade_prediction_based_on_prop</span>
+
+
+<span class="n">predicted_grades</span> <span class="o">=</span> <span class="n">prob_pos_series</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+    <span class="n">map_grade_prediction_based_on_prop_fact</span><span class="p">(</span><span class="n">sections</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">X_test_cp</span> <span class="o">=</span> <span class="n">X_test</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">X_test_cp</span><span class="p">[</span><span class="s2">"target__loan_status"</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_test</span>
+<span class="n">X_test_cp</span><span class="p">[</span><span class="s2">"pass__int_rate"</span><span class="p">]</span> <span class="o">=</span> <span class="n">interest_rates</span>
+
+<span class="n">predictions_with_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="n">X_test_cp</span><span class="p">,</span>
+        <span class="n">predicted_grades</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"predicted_grades"</span><span class="p">),</span>
+    <span class="p">],</span>
+    <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">predictions_with_data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"predicted_grades"</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">local_utils</span><span class="o">.</span><span class="n">calculate_metrics</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">display</span><span class="p">(</span><span class="s2">"Returns and Default Rate Based on Default Probability Model:"</span><span class="p">)</span>
+<span class="n">results</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
 <div class="jp-Cell-outputWrapper">
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
@@ -15801,9 +16361,152 @@ C:\Users\Paulius\AppData\Local\pypoetry\Cache\virtualenvs\ppuodz-ml-4-1-dqELbViF
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput" id="cell-id=7fdd7a2f142abd09">
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput" id="cell-id=99000bf6bf2e6401">
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noInput" id="cell-id=f31177bbca96afaa">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=7fdd7a2f142abd09">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [20]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">estimate_financial_improvement</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">predictions</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Estimate financial improvement by comparing actual financial metrics to hypothetical</span>
+<span class="sd">    scenarios where loans predicted to default were not issued. Values requiring conversion</span>
+<span class="sd">    to millions are converted upfront.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">    - data: DataFrame with actual loan data, including 'target__loan_status', 'pass__loan_amnt', and 'pass__int_rate'.</span>
+<span class="sd">    - predictions: Series or list containing model predictions corresponding to the data.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    - DataFrame: A DataFrame containing both actual and hypothetical financial metrics, with appropriate formatting.</span>
+<span class="sd">    """</span>
+    <span class="n">data_with_predictions</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">data_with_predictions</span><span class="p">[</span><span class="s2">"predictions"</span><span class="p">]</span> <span class="o">=</span> <span class="n">predictions</span>
+
+    <span class="n">total_loan_amount_actual</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">"pass__loan_amnt"</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="mi">1_000_000</span>
+    <span class="p">)</span>  <span class="c1"># Convert to millions</span>
+    <span class="n">total_interest_paid_actual</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span>
+                    <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">"pass__loan_amnt"</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="s2">"pass__int_rate"</span><span class="p">]</span> <span class="o">/</span> <span class="mi">100</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="s2">"target__loan_status"</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span>
+                    <span class="k">else</span> <span class="mi">0</span>
+                <span class="p">),</span>
+                <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="o">/</span> <span class="mi">1_000_000</span>
+    <span class="p">)</span>
+    <span class="n">total_loss_actual</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s2">"target__loan_status"</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"pass__loan_amnt"</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="mi">1_000_000</span>
+    <span class="p">)</span>
+    <span class="n">total_return_percent_actual</span> <span class="o">=</span> <span class="p">(</span>
+                                          <span class="n">total_interest_paid_actual</span> <span class="o">*</span> <span class="mi">1_000_000</span> <span class="o">/</span> <span class="p">(</span>
+                                              <span class="n">total_loan_amount_actual</span> <span class="o">*</span> <span class="mi">1_000_000</span><span class="p">)</span>
+                                  <span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+
+    <span class="c1"># Calculations for hypothetical when using the model scenario</span>
+    <span class="n">hypothetical_data</span> <span class="o">=</span> <span class="n">data_with_predictions</span><span class="p">[</span><span class="n">data_with_predictions</span><span class="p">[</span><span class="s2">"predictions"</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">total_loan_amount_hypo</span> <span class="o">=</span> <span class="n">hypothetical_data</span><span class="p">[</span><span class="s2">"pass__loan_amnt"</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="mi">1_000_000</span>
+    <span class="n">total_interest_paid_hypo</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">hypothetical_data</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s2">"pass__loan_amnt"</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="s2">"pass__int_rate"</span><span class="p">]</span> <span class="o">/</span> <span class="mi">100</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="o">/</span> <span class="mi">1_000_000</span>
+    <span class="p">)</span>  <span class="c1"># Convert to millions</span>
+    <span class="n">total_loss_hypo</span> <span class="o">=</span> <span class="p">(</span>
+                              <span class="n">hypothetical_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+                                  <span class="n">hypothetical_data</span><span class="p">[</span><span class="s2">"target__loan_status"</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"pass__loan_amnt"</span>
+                              <span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+                              <span class="o">/</span> <span class="mi">1_000_000</span>
+                      <span class="p">)</span> <span class="o">*</span> <span class="n">LGD</span>  <span class="c1"># Convert to millions</span>
+    <span class="n">total_return_percent_hypo</span> <span class="o">=</span> <span class="p">(</span>
+                                        <span class="n">total_interest_paid_hypo</span> <span class="o">*</span> <span class="mi">1_000_000</span> <span class="o">/</span> <span class="p">(</span><span class="n">total_loan_amount_hypo</span> <span class="o">*</span> <span class="mi">1_000_000</span><span class="p">)</span>
+                                <span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>  <span class="c1"># Recalculate to correct percentage if total_loan_amount_hypo &gt; 0 else 0</span>
+
+    <span class="n">losses_avoided</span> <span class="o">=</span> <span class="n">total_loss_actual</span> <span class="o">-</span> <span class="n">total_loss_hypo</span>
+    <span class="n">interest_lost</span> <span class="o">=</span> <span class="n">total_interest_paid_hypo</span> <span class="o">-</span> <span class="n">total_interest_paid_actual</span>
+    <span class="n">total_applications_actual</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">total_applications_hypo</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">hypothetical_data</span><span class="p">)</span>
+
+    <span class="n">improvement_metrics</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">"Total Loan Amount"</span><span class="p">:</span> <span class="p">[</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">total_loan_amount_actual</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">M"</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">total_loan_amount_hypo</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">M"</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="s2">"Total Interest Paid"</span><span class="p">:</span> <span class="p">[</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">total_interest_paid_actual</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">M"</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">total_interest_paid_hypo</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">M"</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="s2">"Total Return %"</span><span class="p">:</span> <span class="p">[</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">total_return_percent_actual</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">%"</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">total_return_percent_hypo</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">%"</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="s2">"Default Rate"</span><span class="p">:</span> <span class="p">[</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">data_with_predictions</span><span class="p">[</span><span class="s1">'target__loan_status'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">hypothetical_data</span><span class="p">[</span><span class="s1">'target__loan_status'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="s2">"Total Loss"</span><span class="p">:</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">total_loss_actual</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">M"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">total_loss_hypo</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">M"</span><span class="p">],</span>
+        <span class="s2">"Losses Avoided"</span><span class="p">:</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">losses_avoided</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">M"</span><span class="p">],</span>
+        <span class="s2">"Interest Lost"</span><span class="p">:</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">interest_lost</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">M"</span><span class="p">],</span>
+        <span class="s2">"Total Applications Accepted"</span><span class="p">:</span> <span class="p">[</span>
+            <span class="n">total_applications_actual</span><span class="p">,</span>
+            <span class="n">total_applications_hypo</span><span class="p">,</span>
+        <span class="p">],</span>
+    <span class="p">}</span>
+
+    <span class="n">improvement_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="n">improvement_metrics</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s2">"Actual"</span><span class="p">,</span> <span class="s2">"Hypothetical"</span><span class="p">]</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="k">return</span> <span class="n">improvement_df</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=99000bf6bf2e6401">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [21]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">transformed_data</span> <span class="o">=</span> <span class="n">X_calib</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">transformed_data</span>
+
+<span class="c1"># 'target__loan_status', 'pass__loan_amnt', and 'pass__int_rate'</span>
+
+<span class="n">transformed_data</span><span class="p">[</span><span class="s2">"target__loan_status"</span><span class="p">]</span> <span class="o">=</span> <span class="n">X_calib_target</span>
+<span class="n">transformed_data</span><span class="p">[</span><span class="s2">"pass__loan_amnt"</span><span class="p">]</span> <span class="o">=</span> <span class="n">transformed_data</span><span class="p">[</span><span class="s2">"AmtCredit"</span><span class="p">]</span>
+<span class="n">transformed_data</span><span class="p">[</span><span class="s2">"pass__int_rate"</span><span class="p">]</span> <span class="o">=</span> <span class="n">interest_rates</span>
+<span class="n">transformed_data</span> <span class="o">=</span> <span class="n">transformed_data</span><span class="p">[</span>
+    <span class="p">[</span><span class="s2">"target__loan_status"</span><span class="p">,</span> <span class="s2">"pass__loan_amnt"</span><span class="p">,</span> <span class="s2">"pass__int_rate"</span><span class="p">]</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=f31177bbca96afaa">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [22]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">prob_pos_calibrated</span>
+<span class="n">rounded_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">prob_pos_calibrated</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="n">rounded_array</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
 <div class="jp-Cell-outputWrapper">
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
@@ -15828,7 +16531,20 @@ C:\Users\Paulius\AppData\Local\pypoetry\Cache\virtualenvs\ppuodz-ml-4-1-dqELbViF
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noInput" id="cell-id=6dac93dac9b148b7">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=6dac93dac9b148b7">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [23]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">estimate_financial_improvement</span><span class="p">(</span><span class="n">transformed_data</span><span class="p">,</span> <span class="n">y_calib_predictions</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
 <div class="jp-Cell-outputWrapper">
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
@@ -15941,7 +16657,36 @@ C:\Users\Paulius\AppData\Local\pypoetry\Cache\virtualenvs\ppuodz-ml-4-1-dqELbViF
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noInput" id="cell-id=fd0a3d749bf3c3b9">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=fd0a3d749bf3c3b9">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [24]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython2"><pre><span></span><span class="c1"># Number of samples to include in subsample</span>
+<span class="n">num_samples</span> <span class="o">=</span> <span class="mi">100</span>
+
+<span class="c1"># Generate random indices for subsampling</span>
+<span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">X_test</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">num_samples</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Subsample the SHAP values and test data</span>
+<span class="n">shap_values_subsample</span> <span class="o">=</span> <span class="n">shap_values</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+<span class="n">X_test_subsample</span> <span class="o">=</span> <span class="n">X_test</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+
+<span class="c1"># Use the subsampled data in the decision plot</span>
+<span class="n">shap</span><span class="o">.</span><span class="n">decision_plot</span><span class="p">(</span>
+    <span class="n">explainer</span><span class="o">.</span><span class="n">expected_value</span><span class="p">,</span>
+    <span class="n">shap_values_subsample</span><span class="p">,</span>
+    <span class="n">X_test_subsample</span><span class="p">,</span>
+    <span class="n">ignore_warnings</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
 <div class="jp-Cell-outputWrapper">
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
@@ -15965,7 +16710,43 @@ C:\Users\Paulius\AppData\Local\pypoetry\Cache\virtualenvs\ppuodz-ml-4-1-dqELbViF
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noInput" id="cell-id=abbc2f5c8b2660e0">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=abbc2f5c8b2660e0">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [25]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># Number of samples to include in subsample</span>
+<span class="n">num_samples</span> <span class="o">=</span> <span class="mi">100</span>
+
+<span class="c1"># Generate random indices for subsampling from the full dataset</span>
+<span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">X_test</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">num_samples</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Subsample the SHAP values and test data</span>
+<span class="n">shap_values_subsample</span> <span class="o">=</span> <span class="n">shap_values</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+<span class="n">X_test_subsample</span> <span class="o">=</span> <span class="n">X_test</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+
+<span class="c1"># Indices of specific observations to display with feature values</span>
+<span class="n">specific_indices</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># Adjust indices based on your needs within the subsample</span>
+
+<span class="c1"># Plot each specific index with feature values</span>
+<span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">specific_indices</span><span class="p">:</span>
+    <span class="n">shap</span><span class="o">.</span><span class="n">decision_plot</span><span class="p">(</span>
+        <span class="n">explainer</span><span class="o">.</span><span class="n">expected_value</span><span class="p">,</span>
+        <span class="n">shap_values_subsample</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
+        <span class="n">features</span><span class="o">=</span><span class="n">X_test_subsample</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
+        <span class="n">feature_names</span><span class="o">=</span><span class="n">X_test</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+        <span class="n">ignore_warnings</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
 <div class="jp-Cell-outputWrapper">
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
@@ -15984,7 +16765,42 @@ C:\Users\Paulius\AppData\Local\pypoetry\Cache\virtualenvs\ppuodz-ml-4-1-dqELbViF
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput" id="cell-id=12c9f1f117ab683e">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=12c9f1f117ab683e">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [26]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># Calculate absolute differences between predicted probabilities and actual values</span>
+<span class="n">predicted_probabilities</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)[</span>
+                          <span class="p">:,</span> <span class="mi">1</span>
+                          <span class="p">]</span>  <span class="c1"># Probabilities for the positive class</span>
+
+<span class="n">absolute_differences</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">predicted_probabilities</span> <span class="o">-</span> <span class="n">y_test</span><span class="p">)</span>
+
+<span class="c1"># Create a DataFrame for easier handling</span>
+<span class="n">differences_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">"absolute_difference"</span><span class="p">:</span> <span class="n">absolute_differences</span><span class="p">,</span> <span class="s2">"index"</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y_test</span><span class="p">))}</span>
+<span class="p">)</span>
+
+<span class="n">N</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">top_differences_df</span> <span class="o">=</span> <span class="n">differences_df</span><span class="o">.</span><span class="n">nlargest</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="s2">"absolute_difference"</span><span class="p">)</span>
+
+<span class="n">random_sample_top_diff</span> <span class="o">=</span> <span class="n">top_differences_df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">N</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="n">selected_indices</span> <span class="o">=</span> <span class="n">random_sample_top_diff</span><span class="p">[</span><span class="s2">"index"</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+<span class="n">selected_samples_X_test</span> <span class="o">=</span> <span class="n">X_test</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">selected_indices</span><span class="p">]</span>
+<span class="n">selected_samples_y_test</span> <span class="o">=</span> <span class="n">y_test</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">selected_indices</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=87fa40d8efb2e70c">
 <div class="jp-Cell-inputWrapper" tabindex="0">
@@ -15997,7 +16813,87 @@ C:\Users\Paulius\AppData\Local\pypoetry\Cache\virtualenvs\ppuodz-ml-4-1-dqELbViF
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noInput" id="cell-id=6b1e4f63c66e7168">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=6b1e4f63c66e7168">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [30]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># Calculate absolute differences between predicted probabilities and actual values</span>
+<span class="n">predicted_probabilities</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)[:,</span> <span class="mi">1</span><span class="p">]</span>
+
+<span class="n">absolute_differences</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">predicted_probabilities</span> <span class="o">-</span> <span class="n">y_test</span><span class="p">)</span>
+<span class="n">real_differences</span> <span class="o">=</span> <span class="n">predicted_probabilities</span> <span class="o">-</span> <span class="n">y_test</span>
+
+<span class="c1"># Create a DataFrame for easier handling</span>
+<span class="n">differences_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">"y_test"</span><span class="p">:</span> <span class="n">y_test</span><span class="p">,</span>
+        <span class="s2">"predicted_probabilities"</span><span class="p">:</span> <span class="n">predicted_probabilities</span><span class="p">,</span>
+        <span class="s2">"real_differences"</span><span class="p">:</span> <span class="n">real_differences</span><span class="p">,</span>
+        <span class="s2">"absolute_difference"</span><span class="p">:</span> <span class="n">absolute_differences</span><span class="p">,</span>
+        <span class="s2">"index"</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y_test</span><span class="p">)),</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+<span class="c1"># Sort by 'absolute_difference' in descending order and select the top N</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">top_differences_df</span> <span class="o">=</span> <span class="n">differences_df</span><span class="o">.</span><span class="n">nlargest</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="s2">"absolute_difference"</span><span class="p">)</span>
+<span class="n">min_differences_df</span> <span class="o">=</span> <span class="n">differences_df</span><span class="o">.</span><span class="n">nsmallest</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="s2">"absolute_difference"</span><span class="p">)</span>
+
+<span class="n">min_diff_only_default</span> <span class="o">=</span> <span class="n">differences_df</span><span class="p">[</span><span class="n">differences_df</span><span class="p">[</span><span class="s2">"y_test"</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">nsmallest</span><span class="p">(</span>
+    <span class="n">N</span><span class="p">,</span> <span class="s2">"absolute_difference"</span>
+<span class="p">)</span>
+
+<span class="n">random_sample_top_diff</span> <span class="o">=</span> <span class="n">top_differences_df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span>
+    <span class="n">n</span><span class="o">=</span><span class="n">N</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>  
+<span class="n">random_sample_min_diff</span> <span class="o">=</span> <span class="n">min_differences_df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span>
+    <span class="n">n</span><span class="o">=</span><span class="n">N</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span> 
+<span class="n">random_sample_posmin_diff</span> <span class="o">=</span> <span class="n">min_diff_only_default</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span>
+    <span class="n">n</span><span class="o">=</span><span class="n">N</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>  
+
+<span class="c1"># Get the indices of the selected samples</span>
+<span class="n">selected_indices</span> <span class="o">=</span> <span class="n">random_sample_top_diff</span><span class="p">[</span><span class="s2">"index"</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+<span class="n">selected_min_indices</span> <span class="o">=</span> <span class="n">random_sample_min_diff</span><span class="p">[</span><span class="s2">"index"</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+<span class="n">posmin_indices</span> <span class="o">=</span> <span class="n">random_sample_posmin_diff</span><span class="p">[</span><span class="s2">"index"</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+<span class="kn">import</span> <span class="nn">shap</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">explainer</span> <span class="o">=</span> <span class="n">shap</span><span class="o">.</span><span class="n">TreeExplainer</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+<span class="n">shap_values</span> <span class="o">=</span> <span class="n">explainer</span><span class="o">.</span><span class="n">shap_values</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">posmin_indices</span><span class="p">,</span> <span class="n">selected_min_indices</span><span class="p">,</span> <span class="n">selected_indices</span><span class="p">]):</span>
+    <span class="c1"># Create an Explanation object from SHAP values</span>
+    <span class="n">shap_explanation</span> <span class="o">=</span> <span class="n">shap</span><span class="o">.</span><span class="n">Explanation</span><span class="p">(</span>
+        <span class="n">values</span><span class="o">=</span><span class="n">shap_values</span><span class="p">[</span><span class="n">index</span><span class="p">],</span>
+        <span class="n">base_values</span><span class="o">=</span><span class="n">explainer</span><span class="o">.</span><span class="n">expected_value</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">X_test</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="p">:],</span>
+        <span class="n">feature_names</span><span class="o">=</span><span class="n">X_test</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+    <span class="p">)</span>
+
+    <span class="n">shap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">waterfall</span><span class="p">(</span><span class="n">shap_explanation</span><span class="p">,</span> <span class="n">max_display</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="n">predicted_probability</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">index</span><span class="p">:</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">actual_y_value</span> <span class="o">=</span> <span class="n">y_test</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">, Actual Y Value: </span><span class="si">{</span><span class="n">actual_y_value</span><span class="si">}</span><span class="s2">, Predicted Probability: </span><span class="si">{</span><span class="n">predicted_probability</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span>
+    <span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
 <div class="jp-Cell-outputWrapper">
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
@@ -16059,5 +16955,3 @@ C:\Users\Paulius\AppData\Local\pypoetry\Cache\virtualenvs\ppuodz-ml-4-1-dqELbViF
 </html>
 
 </div>
-</body>
-</html>

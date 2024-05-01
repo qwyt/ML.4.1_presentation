@@ -7537,7 +7537,20 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Hello WOrld?</p>
+<h1 id="Home-Credit-Default-Risk">Home Credit Default Risk<a class="anchor-link" href="#Home-Credit-Default-Risk">¶</a></h1><p>This project is based on Home Credit's <a href="https://www.kaggle.com/c/home-credit-default-risk/data">loan application dataset</a>.</p>
+<p>Our goal was to advanced boosting to predict which loans Home Credit's portfolio have the highest risk of default or having payment difficulties. To do that:</p>
+<ul>
+<li><p>We've used previous loan applications and applicants history from 3rd parties to build additional features (using Featuretools and manually) in addition to the <code>applications</code> dataset.</p>
+</li>
+<li><p>We were table to achieve an <code>AUC</code> of 0.78 using an LGBM tuned with Optuna (we've also built XGBoost and CatBoost models in addition to simple Logit (only on a subset of the dataset) which have achieved comparable or slightly inferior performance)</p>
+</li>
+<li><p>In addition to estimating the default risk we've built risk-based pricing  and loan quality grading models which allowed to build estimate "optimal" interest rates and risk grades for model to optimize overall return on investment.</p>
+</li>
+<li><p>Our simplified model using fixed <code>Loss Given Default</code> ratios, base interest rates and margins (can be adjusted using actual figures from Home Credit) allowed us to build a more conservative loan approval algorithm would allow Home Credit to hypotehticall reduce their loses by up to 80% or so.</p>
+</li>
+</ul>
+<p>The primary goal was to develop a predictive model that not only assesses the risk of loan default more accurately but also integrates risk assessment into pricing strategies to enhance financial outcomes. Utilizing a variety of models, including LightGBM with the DART algorithm, our efforts culminated in a system that not only predicts loan defaults with a high degree of accuracy but also supports risk-based pricing and loan quality grading. Key achievements include significant reductions in potential losses and the development of a pricing model that adjusts interest rates based on estimated risk levels. These enhancements help balance risk and return, offering a conservative yet profitable lending strategy.</p>
+<h3 id="Project-Structure">Project Structure<a class="anchor-link" href="#Project-Structure">¶</a></h3>
 </div>
 </div>
 </div>
